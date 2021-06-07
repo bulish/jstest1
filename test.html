@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles.css">
+    <title>Test</title>
+    <script>
+
+        const emailFunction = (event) => {
+            var email = event.target.innerHTML;
+            email = email.slice(email.indexOf(" ") + 1, email.length);
+            window.location.href = 'mailto:' + email + '?subject=Bazar';
+        }
+
+        let myPromise = new Promise(function(myResolve, myReject){
+            let req = new XMLHttpRequest();
+            req.onreadystatechange = function() {
+            if (req.readyState == 4 && req.status == 200) {
+                myResolve(req.responseText);
+            }
+        }
+        req.open('GET', "https://marianek.cz/bazos/search.php");
+        req.send();
+        });
+        myPromise.then(
+            function(value) { 
+                myObj = JSON.parse(value);
+                console.log(myObj.items);
+                //document.getElementById("demo").innerHTML = value;
+                for (let i=0; i<myObj.items.length; i++){
+                    var mainDiv = document.createElement("div");
+                    document.body.appendChild(mainDiv);
+                    mainDiv.classList = "mainDiv";
+                    var theName = document.createElement("div");
+                    theName.innerHTML = myObj.items[i].name;
+                    theName.classList = "theName"
+                    mainDiv.appendChild(theName);
+                    var theEmail = document.createElement("div");
+                    theEmail.innerHTML = "Email: " + myObj.items[i].email;
+                    theEmail.classList = "theEmail"
+                    theEmail.addEventListener("click", emailFunction);
+                    mainDiv.appendChild(theEmail);
+                    var theCat = document.createElement("div");
+                    theCat.innerHTML = myObj.items[i].cat;
+                    mainDiv.appendChild(theCat);
+                    var theDescr = document.createElement("div");
+                    theDescr.innerHTML = myObj.items[i].descr;
+                    mainDiv.appendChild(theDescr);
+                    var thePrice = document.createElement("div");
+                    thePrice.innerHTML = "Cena: " + myObj.items[i].price + " Kč";
+                    thePrice.classList=  "thePrice";
+                    mainDiv.appendChild(thePrice);
+                }
+            },
+            function(error) { alert("error") }
+        );
+    </script>
+</head>
+<body>
+</body>
+</html>
